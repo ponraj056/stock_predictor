@@ -1,0 +1,62 @@
+import streamlit as st
+import yfinance as yf
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import plotly.graph_objs as go
+from datetime import datetime, timedelta
+
+st.set_page_config(page_title="Stock Market Predictor", layout="wide")
+
+st.title("📈 Stock Market Predictor with Visualization")
+
+# Sidebar Input
+st.sidebar.header("Configure Stock Analysis")
+stock_symbol = st.sidebar.text_input("Enter Stock Symbol (e.g. AAPL, GOOGL)", value='AAPL')
+start_date = st.sidebar.date_input("Start Date", value=datetime.today() - timedelta(days=365))
+end_date = st.sidebar.date_input("End Date", value=datetime.today())
+
+# Main Function
+def fetch_data(symbol, start, end):
+    df = yf.download(symbol, start=start, end=end)
+    df['SMA_20'] = df['Close'].rolling(window=20).mean()
+    df['Days'] = np.arange(len(df)).reshape(-1, 1)
+    return df
+
+if st.sidebar.button("Analyze"):
+    try:
+        data = fetch_data(stock_symbol, start_date, end_date)
+
+        if data.empty:
+            st.error("No data available. Please try a different symbol.")
+        else:
+            st.success(f"Loaded data for {stock_symbol}")
+
+            # Price chart with SMA
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=data.index, y=data['Close'], name='Close Price', line=dict(color='blue')))
+            fig.add_trace(go.Scatter(x=data.index, y=data['SMA_20'], name='20-day SMA', line=dict(color='orange')))
+            fig.update_layout(title="Stock Price & Moving Average", xaxis_title="Date", yaxis_title="Price")
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Linear Regression for prediction
+            model = LinearRegression()
+            clean_data = data.dropna()
+            model.fit(clean_data['Days'].values.reshape(-1, 1), clean_data['Close'])
+
+            future_days = 30
+            future = np.arange(len(clean_data), len(clean_data) + future_days).reshape(-1, 1)
+            predictions = model.predict(future)
+
+            # Prediction Plot
+            future_dates = pd.date_range(data.index[-1], periods=future_days + 1, freq='B')[1:]
+            fig2 = go.Figure()
+            fig2.add_trace(go.Scatter(x=clean_data.index, y=clean_data['Close'], name='Historical Price', line=dict(color='green')))
+            fig2.add_trace(go.Scatter(x=future_dates, y=predictions, name='Predicted Price', line=dict(color='red')))
+            fig2.update_layout(title="Price Prediction (Linear Regression)", xaxis_title="Date", yaxis_title="Price")
+            st.plotly_chart(fig2, use_container_width=True)
+
+            st.caption("📌 This tool uses a basic linear model. For more accurate forecasting, advanced models (e.g., LSTM, XGBoost) are recommended.")
+
+    except Exception as e:
+        st.error(f"Error fetching data: {e}")
