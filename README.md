@@ -36,3 +36,12 @@ git clone https://github.com/your-username/stock-market-predictor.git
 cd stock-market-predictor
 pip install -r requirements.txt
 streamlit run stock_predictor_web.py
+
+##Contact 
+
+ Name: Ponraj D 
+ mail id : ponrajsdr@gmail.com 
+ linkedin 🔗: https://www.linkedin.com/in/ponrajdr?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app
+
+
+ 
