@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+  <meta charset="UTF-8">   
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+  <title>Stock Predictor</title>    <link rel="stylesheet"href="style.css"> 
+  <!-- Link to your CSS file -->
+</head>
+  <body>   
+    <header>    
+      <h1>Stock Market Predictor</h1>        <p>Enter a stock ticker and see our predictions.</p>  
+    </header>   
+    <main>       
+      <section id="input-section">            <h2>Get Predictions</h2>            <form id="prediction-form">                <label for="ticker">Stock Ticker:</label>   
+        <input type="text" id="ticker" name="ticker" required>                <label for="start-date">Start Date (YYYY-MM-DD):</label>                <input type="date" id="start-date" name="start-date" required>                <label for="end-date">End Date (YYYY-MM-DD):</label>                <input type="date" id="end-date" name="end-date" required>                <button type="submit">Get Prediction</button>      
+      </form>      
+      </section>    
+      <section id="results-section" style="display: none;"> 
+        <!-- Initially hidden -->            <h2>Prediction Results</h2>            <div id="prediction-output">                <!-- Prediction results will go here -->       
+        </div>          
+        <div id="error-message" class="error" style="display: none;">              <!-- Error messages will go here -->     
+        </div>        
+        <div id="chart-container">                <!-- Chart will go here -->            </div>    
+      </section>    
+    </main>   
+    <footer>     
+      <p>&copy; 2024 Mobiluck Company. All rights reserved.</p> 
+    </footer>    <script src="script.js"></script> 
+    <!-- Link to your JavaScript file -->
+</body>
+</html>
